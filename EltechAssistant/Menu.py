@@ -1,7 +1,8 @@
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
-
-MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS = range(6)
+from EltechAssistant import FindInDataBase
+import re
+MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS, GROUP_ONE_PERSON, TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT = range(9)
 
 
 class Menu:
@@ -17,7 +18,6 @@ class Menu:
     @staticmethod
     def init(bot, update):
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
-
         update.message.reply_text(
             'Выбери, что хочешь узнать. Для выхода введи команду /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
@@ -62,93 +62,98 @@ class Menu:
     @staticmethod
     def schedule(bot, update):
         text = update.message.text
-        # update.message.reply_text('Вы выбрали ' + text)
-        if 'Вся неделя' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'Неделя 1' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'Неделя 2' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'На завтра' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'На сегодня' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'Экзамены' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-        elif 'Назад' in text:
-            pass
-
-        return Menu.init(bot, update)
+        if 'Назад' in text:
+            return Menu.init(bot, update)
+        else :
+            data = FindInDataBase.shedule(text)
+            update.message.reply_text('Answer ' + data, reply_markup=ReplyKeyboardRemove())
+            return Menu.init(bot, update)
 
     @staticmethod
     def group(bot, update):
         text = update.message.text
-        # update.message.reply_text('Вы выбрали ' + text)
-        # Next step is "db query => fuzzy search" to get info on specific student
-        if 'Список группы' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Почта группы' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Персона' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Телефоны' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Дни рождения' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Ссылки в Вк' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
+        if 'Персона' in text:
+            update.message.reply_text('Вы выбрали ' + text, reply_markup=ReplyKeyboardRemove())
+            return GROUP_ONE_PERSON
         elif 'Назад' in text:
+            return Menu.init(bot, update)
+        elif 'Список' in text:
+            data = FindInDataBase.group(text)
+            data2 = re.split("[,\'\[\]() ]+", str(data))
+            print(data2)
+            for i in range(0, int(len(data2) - 1) // 3):
+                if data2[i * 3 + 3] != "None":
+                    update.message.reply_text(data2[1 + i * 3] + " " + data2[i * 3 + 2] + " " + data2[i * 3 + 3])
+            else:
+                update.message.reply_text(data2[1 + i * 3] + " " + data2[i * 3 + 2])
+            return Menu.init(bot, update)
+        else:
+            data = FindInDataBase.group(text)
+            update.message.reply_text('Answer ' + data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
 
     @staticmethod
     def teachers(bot, update):
         text = update.message.text
-        # update.message.reply_text('Вы выбрали ' + text)
-        # Next step is "db query => fuzzy search" to get info on specific student
         if 'Список преподавателей' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
+            data = FindInDataBase.teachers(text)
+            update.message.reply_text(data)
+            return Menu.init(bot, update)
         elif 'Персона' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
+            update.message.reply_text('Вы выбрали ' + text, reply_markup=ReplyKeyboardRemove())
+            return TEACHERS_ONE_PERSON
         elif 'Назад' in text:
             return Menu.init(bot, update)
 
     @staticmethod
     def subjects(bot, update):
         text = update.message.text
-        update.message.reply_text('Вы выбрали ' + text)
-        if 'Учебный план' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Преподаватели' in text:
-            update.message.reply_text('Вы выбрали ' + text)
-            return ''
-        elif 'Предмет' in text:
-            return ''
+        if 'Предмет' in text:
+            update.message.reply_text('Вы выбрали ' + text, reply_markup=ReplyKeyboardRemove())
+            return SUBJECTS_ONE_SUBJECT
         elif 'Назад' in text:
+            return Menu.init(bot, update)
+        else:
+            data = FindInDataBase.subjects(text)
+            update.message.reply_text(data)
             return Menu.init(bot, update)
 
     @staticmethod
     def events(bot, update):
         text = update.message.text
-        update.message.reply_text('Вы выбрали ' + text)
         if 'Все мероприятия' in text:
-            update.message.reply_text('Вы выбрали ' + text)
+            data = FindInDataBase.events(text)
+            update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
+            return Menu.init(bot, update)
         elif 'Назад' in text:
             pass
         return Menu.init(bot, update)
 
     @staticmethod
+    def group_one_person(bot, update):
+        text = update.message.text
+        data = FindInDataBase.group_one_person(text)
+        update.message.reply_text(data)
+        return Menu.init(bot, update)
+
+    @staticmethod
+    def teachers_one_person(bot, update):
+        text = update.message.text
+        data = FindInDataBase.teachers_one_person(text)
+        update.message.reply_text(data)
+        return Menu.init(bot, update)
+
+    @staticmethod
+    def subjects_one_subject(bot, update):
+        text = update.message.text
+        data = FindInDataBase.subjects_one_subject(text)
+        update.message.reply_text(data)
+        return Menu.init(bot, update)
+
+    @staticmethod
     def cancel(bot, update):
         user = update.message.from_user
-        update.message.reply_text('Bye! I hope we can talk again some day.',
+        update.message.reply_text('Bye!',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END
@@ -156,3 +161,4 @@ class Menu:
     @staticmethod
     def error(bot, update, error):
         """Log Errors caused by Updates."""
+
