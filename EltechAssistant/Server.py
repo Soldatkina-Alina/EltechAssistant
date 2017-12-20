@@ -1,29 +1,45 @@
 # Main module entry point
-from EltechAssistant import BotWebhook
+from telegram.ext import Updater, ConversationHandler, CommandHandler, RegexHandler
+from EltechAssistant.Menu import Menu
 
-from flask import Flask
-from flask import request
-from flask import jsonify
-
-
-app = Flask(__name__)
+MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS = range(6)
 
 
-@app.route('/', methods=['POST'])
-def index():
-    if request.method == 'POST':
-        data = request.get_json()
-        BotWebhook.BotWebhook.write_json(data)
-        message = BotWebhook.BotWebhook.get_message(data)
-        chat_id = message['chat_id']
-        text = message['text']
-        if 'hi' in text:
-            BotWebhook.BotWebhook.send_message(chat_id, text)
-        else:
-            BotWebhook.BotWebhook.send_message(chat_id)
-        return jsonify(data)
-    pass
+
+class Server:
+    @staticmethod
+    def start():
+        updater = Updater(token)
+        dp = updater.dispatcher
+
+        conv_handler = ConversationHandler(
+            entry_points=[CommandHandler('start', Menu.start)],
+
+            states={
+                MAIN_MENU: [RegexHandler('^(Расписание|Группа|Преподаватели|Мероприятия)$', Menu.main_menu)],
+                SCHEDULE:
+                    [RegexHandler('^(Вся неделя|Неделя 1|Неделя 2|На завтра|На сегодня|Экзамены|Назад)$',
+                                  Menu.schedule)],
+                GROUP:
+                    [RegexHandler('^(Список группы|Почта группы|Персона|Телефоны|Дни рождения|Ссылки в Вк|Назад)$',
+                                  Menu.group)],
+                TEACHERS: [RegexHandler('^(Список преподавателей|Персона|Назад)$', Menu.teachers)],
+                SUBJECTS: [RegexHandler('^(Учебный план|Преподаватели|Предмет|Назад)&', Menu.subjects)],
+                EVENTS: [RegexHandler('^(Название мероприятия|Назад)$', Menu.events)]
+
+            },
+
+            fallbacks=[CommandHandler('cancel', Menu.cancel)]
+        )
+
+        dp.add_handler(conv_handler)
+
+        dp.add_error_handler(Menu.error)
+
+        updater.start_polling()
+
+        updater.idle()
 
 
 if __name__ == '__main__':
-    app.run()
+    Server.start()
