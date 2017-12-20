@@ -10,7 +10,7 @@ class Menu:
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
 
         update.message.reply_text(
-            'Привет. Я твой помошник. Выбери, что хочешь узнать. Для выхода введи команду /cancel',
+            'Привет. Для выхода введи команду /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
         return MAIN_MENU
 
@@ -127,13 +127,13 @@ class Menu:
         if 'Учебный план' in text:
             update.message.reply_text('Вы выбрали ' + text)
             return ''
-        # ??????
         elif 'Преподаватели' in text:
-            return Menu.start(bot, update)
+            update.message.reply_text('Вы выбрали ' + text)
+            return ''
         elif 'Предмет' in text:
-            return Menu.start(bot, update)
+            return ''
         elif 'Назад' in text:
-            return Menu.start(bot, update)
+            return Menu.init(bot, update)
 
     @staticmethod
     def events(bot, update):
