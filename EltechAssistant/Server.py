@@ -14,22 +14,25 @@ class Server:
         dp = updater.dispatcher
 
         conv_handler = ConversationHandler(
-            entry_points=[RegexHandler('', Menu.start)],
+
+            entry_points=[CommandHandler('start', Menu.start)],
 
             states={
                 MAIN_MENU: [RegexHandler('^(Расписание|Группа|Преподаватели|Предметы|Мероприятия)$', Menu.main_menu)],
                 SCHEDULE:
-                    [RegexHandler('^(Вся неделя|Неделя 1|Неделя 2|На завтра|На сегодня|Экзамены|Назад)$',
+                    [RegexHandler('^(Все расписание|Неделя 1|Неделя 2|На завтра|На сегодня|Экзамены|Назад)$',
                                   Menu.schedule)],
                 GROUP:
                     [RegexHandler('^(Список группы|Почта группы|Персона|Телефоны|Дни рождения|Ссылки в Вк|Назад)$',
                                   Menu.group)],
                 TEACHERS: [RegexHandler('^(Список преподавателей|Персона|Назад)$', Menu.teachers)],
                 SUBJECTS: [RegexHandler('^(Учебный план|Преподаватели|Предмет|Назад)$', Menu.subjects)],
-                EVENTS: [RegexHandler('^(Название мероприятия|Назад)$', Menu.events)],
+                EVENTS: [RegexHandler('^(Все мероприятия|Назад)$', Menu.events)],
                 GROUP_ONE_PERSON:[MessageHandler(Filters.text, Menu.group_one_person)],
                 TEACHERS_ONE_PERSON: [MessageHandler(Filters.text, Menu.teachers_one_person)],
                 SUBJECTS_ONE_SUBJECT:[MessageHandler(Filters.text, Menu.subjects_one_subject)]
+
+
 
             },
 
