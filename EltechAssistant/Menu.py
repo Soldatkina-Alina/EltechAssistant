@@ -2,7 +2,8 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
 from EltechAssistant import FindInDataBase
 import re
-MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS, GROUP_ONE_PERSON, TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT = range(9)
+MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS, GROUP_ONE_PERSON, \
+    TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT = range(9)
 
 
 class Menu:
@@ -63,7 +64,7 @@ class Menu:
         text = update.message.text
         if 'Назад' in text:
             return Menu.init(bot, update)
-        else :
+        else:
             data = FindInDataBase.FindInDataBase.shedule(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
@@ -90,7 +91,6 @@ class Menu:
             data = FindInDataBase.FindInDataBase.group(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
-
 
     @staticmethod
     def teachers(bot, update):
