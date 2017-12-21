@@ -9,9 +9,8 @@ class Menu:
     @staticmethod
     def start(bot, update):
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
-
         update.message.reply_text(
-            'Привет. Для выхода введи команду /cancel',
+            'Привет. Я твой помощник. Что ты хочешь у меня узнать? \n Для прекращения разговора нажмите /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
         return MAIN_MENU
 
@@ -19,7 +18,7 @@ class Menu:
     def init(bot, update):
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
         update.message.reply_text(
-            'Выбери, что хочешь узнать. Для выхода введи команду /cancel',
+            'Сделайте ваш следующий выбор выбор! Или нажмите на /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
         return MAIN_MENU
 
@@ -28,7 +27,7 @@ class Menu:
         user = update.message.from_user
         text = update.message.text
 
-        reply_keyboard1 = [['Вся неделя', 'Неделя 1', 'Неделя 2', 'На завтра', 'На сегодня', 'Экзамены', 'Назад']]
+        reply_keyboard1 = [['Все расписание', 'Неделя 1', 'Неделя 2', 'На завтра', 'На сегодня', 'Экзамены', 'Назад']]
         reply_keyboard2 = [
             ['Список группы', 'Почта группы', 'Персона', 'Телефоны', 'Дни рождения', 'Ссылки в Вк', 'Назад']]
         reply_keyboard3 = [['Список преподавателей', 'Персона', 'Назад']]
@@ -65,8 +64,8 @@ class Menu:
         if 'Назад' in text:
             return Menu.init(bot, update)
         else :
-            data = FindInDataBase.shedule(text)
-            update.message.reply_text('Answer ' + data, reply_markup=ReplyKeyboardRemove())
+            data = FindInDataBase.FindInDataBase.shedule(text)
+            update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
 
     @staticmethod
@@ -78,7 +77,7 @@ class Menu:
         elif 'Назад' in text:
             return Menu.init(bot, update)
         elif 'Список' in text:
-            data = FindInDataBase.group(text)
+            data = FindInDataBase.FindInDataBase.group(text)
             data2 = re.split("[,\'\[\]() ]+", str(data))
             print(data2)
             for i in range(0, int(len(data2) - 1) // 3):
@@ -88,15 +87,16 @@ class Menu:
                 update.message.reply_text(data2[1 + i * 3] + " " + data2[i * 3 + 2])
             return Menu.init(bot, update)
         else:
-            data = FindInDataBase.group(text)
-            update.message.reply_text('Answer ' + data, reply_markup=ReplyKeyboardRemove())
+            data = FindInDataBase.FindInDataBase.group(text)
+            update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
+
 
     @staticmethod
     def teachers(bot, update):
         text = update.message.text
         if 'Список преподавателей' in text:
-            data = FindInDataBase.teachers(text)
+            data = FindInDataBase.FindInDataBase.teachers(text)
             update.message.reply_text(data)
             return Menu.init(bot, update)
         elif 'Персона' in text:
@@ -114,7 +114,7 @@ class Menu:
         elif 'Назад' in text:
             return Menu.init(bot, update)
         else:
-            data = FindInDataBase.subjects(text)
+            data = FindInDataBase.FindInDataBase.subjects(text)
             update.message.reply_text(data)
             return Menu.init(bot, update)
 
@@ -122,7 +122,7 @@ class Menu:
     def events(bot, update):
         text = update.message.text
         if 'Все мероприятия' in text:
-            data = FindInDataBase.events(text)
+            data = FindInDataBase.FindInDataBase.events(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
         elif 'Назад' in text:
@@ -132,28 +132,28 @@ class Menu:
     @staticmethod
     def group_one_person(bot, update):
         text = update.message.text
-        data = FindInDataBase.group_one_person(text)
+        data = FindInDataBase.FindInDataBase.group_one_person(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
     @staticmethod
     def teachers_one_person(bot, update):
         text = update.message.text
-        data = FindInDataBase.teachers_one_person(text)
+        data = FindInDataBase.FindInDataBase.teachers_one_person(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
     @staticmethod
     def subjects_one_subject(bot, update):
         text = update.message.text
-        data = FindInDataBase.subjects_one_subject(text)
+        data = FindInDataBase.FindInDataBase.subjects_one_subject(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
     @staticmethod
     def cancel(bot, update):
-        user = update.message.from_user
-        update.message.reply_text('Bye!',
+        update.message.reply_text('Пока! \n'
+                                  'Для запуска нажми /start',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END
@@ -161,4 +161,3 @@ class Menu:
     @staticmethod
     def error(bot, update, error):
         """Log Errors caused by Updates."""
-
