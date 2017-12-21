@@ -1,7 +1,10 @@
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
-from EltechAssistant import FindInDataBase
+
+from EltechAssistant.Database import Database
+
 import re
+
 MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS, GROUP_ONE_PERSON, \
     TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT = range(9)
 
@@ -65,7 +68,7 @@ class Menu:
         if 'Назад' in text:
             return Menu.init(bot, update)
         else:
-            data = FindInDataBase.FindInDataBase.shedule(text)
+            data = Database.shedule(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
 
@@ -78,11 +81,11 @@ class Menu:
         elif 'Назад' in text:
             return Menu.init(bot, update)
         elif 'Список' in text:
-            data = FindInDataBase.FindInDataBase.group(text)
+            data = Database.group(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
         else:
-            data = FindInDataBase.FindInDataBase.group(text)
+            data = Database.group(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
 
@@ -90,7 +93,7 @@ class Menu:
     def teachers(bot, update):
         text = update.message.text
         if 'Список преподавателей' in text:
-            data = FindInDataBase.FindInDataBase.teachers(text)
+            data = Database.teachers(text)
             update.message.reply_text(data)
             return Menu.init(bot, update)
         elif 'Персона' in text:
@@ -108,7 +111,7 @@ class Menu:
         elif 'Назад' in text:
             return Menu.init(bot, update)
         else:
-            data = FindInDataBase.FindInDataBase.subjects(text)
+            data = Database.subjects(text)
             update.message.reply_text(data)
             return Menu.init(bot, update)
 
@@ -116,7 +119,7 @@ class Menu:
     def events(bot, update):
         text = update.message.text
         if 'Все мероприятия' in text:
-            data = FindInDataBase.FindInDataBase.events(text)
+            data = Database.events(text)
             update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
         elif 'Назад' in text:
@@ -126,21 +129,21 @@ class Menu:
     @staticmethod
     def group_one_person(bot, update):
         text = update.message.text
-        data = FindInDataBase.FindInDataBase.group_one_person(text)
+        data = Database.group_one_person(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
     @staticmethod
     def teachers_one_person(bot, update):
         text = update.message.text
-        data = FindInDataBase.FindInDataBase.teachers_one_person(text)
+        data = Database.teachers_one_person(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
     @staticmethod
     def subjects_one_subject(bot, update):
         text = update.message.text
-        data = FindInDataBase.FindInDataBase.subjects_one_subject(text)
+        data = Database.subjects_one_subject(text)
         update.message.reply_text(data)
         return Menu.init(bot, update)
 
