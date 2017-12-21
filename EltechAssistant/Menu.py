@@ -11,7 +11,7 @@ class Menu:
     def start(bot, update):
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
         update.message.reply_text(
-            'Привет. Я твой помощник. Что ты хочешь у меня узнать? \n Для прекращения разговора нажмите /cancel',
+            'Привет. Я твой помощник. Что ты хочешь у меня узнать? \n Для перезапуска нажми /start \n Для прекращения разговора нажми /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
         return MAIN_MENU
 
@@ -19,7 +19,7 @@ class Menu:
     def init(bot, update):
         reply_keyboard = [['Расписание', 'Группа', 'Преподаватели', 'Предметы', 'Мероприятия']]
         update.message.reply_text(
-            'Сделайте ваш следующий выбор выбор! Или нажмите на /cancel',
+            'Сделайте ваш следующий выбор! Или нажмите на /cancel',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, row_wight=1, resize_keyboard=True))
         return MAIN_MENU
 
@@ -79,13 +79,7 @@ class Menu:
             return Menu.init(bot, update)
         elif 'Список' in text:
             data = FindInDataBase.FindInDataBase.group(text)
-            data2 = re.split("[,\'\[\]() ]+", str(data))
-            print(data2)
-            for i in range(0, int(len(data2) - 1) // 3):
-                if data2[i * 3 + 3] != "None":
-                    update.message.reply_text(data2[1 + i * 3] + " " + data2[i * 3 + 2] + " " + data2[i * 3 + 3])
-            else:
-                update.message.reply_text(data2[1 + i * 3] + " " + data2[i * 3 + 2])
+            update.message.reply_text(data, reply_markup=ReplyKeyboardRemove())
             return Menu.init(bot, update)
         else:
             data = FindInDataBase.FindInDataBase.group(text)
