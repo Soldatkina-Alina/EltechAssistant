@@ -25,23 +25,23 @@ class BotWebhook:
         r = requests.post(url, json=answer)
         return json
 
-# app = Flask(__name__)
-#
-# @app.route('/', methods=['POST', 'GET'])
-# def index():
-#     if request.method == 'POST':
-#         data = request.get_json()
-#         BotWebhook.write_json(data)
-#         message = BotWebhook.get_message(data)
-#         chat_id = message['chat_id']
-#         text = message['text']
-#         if 'hi' in text:
-#             BotWebhook.send_message(chat_id, text)
-#         else:
-#             BotWebhook.send_message(chat_id)
-#         return jsonify(data)
-#     return '<h1>Привет! </h1>'
-#
-# if __name__ == '__main__':
-#     app.run()
+app = Flask(__name__)
+
+@app.route('/', methods=['POST', 'GET'])
+def index():
+    if request.method == 'POST':
+        data = request.get_json()
+        BotWebhook.write_json(data)
+        message = BotWebhook.get_message(data)
+        chat_id = message['chat_id']
+        text = message['text']
+        if 'hi' in text:
+            BotWebhook.send_message(chat_id, text)
+        else:
+            BotWebhook.send_message(chat_id)
+        return jsonify(data)
+    return '<h1>Привет! </h1>'
+
+if __name__ == '__main__':
+    app.run()
 

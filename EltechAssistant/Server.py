@@ -3,19 +3,22 @@ from EltechAssistant.Menu import Menu
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, RegexHandler,
                           ConversationHandler)
 import misc
+# import collections
 
 MAIN_MENU, SCHEDULE, GROUP, TEACHERS, SUBJECTS, EVENTS, GROUP_ONE_PERSON,\
-    TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT = range(9)
+    TEACHERS_ONE_PERSON, SUBJECTS_ONE_SUBJECT, ACCESS = range(10)
 
 token = misc.token
-
 
 class Server:
     @staticmethod
     def start():
+
         updater = Updater(token)
         dp = updater.dispatcher
-
+        # updater.dispatcher.add_handler(handler)
+        # handler = MessageHandler(Filters.text | Filters.command, handle_message)
+        # handlers = collections.defaultdict(generator)
         conv_handler = ConversationHandler(
 
             entry_points=[CommandHandler('start', Menu.start)],
@@ -33,7 +36,8 @@ class Server:
                 EVENTS: [RegexHandler('^(Все мероприятия|Назад)$', Menu.events)],
                 GROUP_ONE_PERSON: [MessageHandler(Filters.text, Menu.group_one_person)],
                 TEACHERS_ONE_PERSON: [MessageHandler(Filters.text, Menu.teachers_one_person)],
-                SUBJECTS_ONE_SUBJECT: [MessageHandler(Filters.text, Menu.subjects_one_subject)]
+                SUBJECTS_ONE_SUBJECT: [MessageHandler(Filters.text, Menu.subjects_one_subject)],
+                ACCESS:[MessageHandler(Filters.text, Menu.access)]
 
 
 
